@@ -152,6 +152,74 @@ MatavimoPabaiga matuotiSuliejima(const vector<int>& pradinis, int bandymai = 5) 
     return { bendrasLaikas / bandymai, paskPalyginimai, paskSukeitimai };
 }
 
+// --- Rezultatų spausdinimas ---
+
+void spausdintiAntraste() {
+    cout << "\n";
+    cout << "================================================================\n";
+    cout << "   RIKIAVIMO ALGORITMŲ LYGINAMOJI ANALIZĖ\n";
+    cout << "   Insertion Sort (Iterpimo) vs Merge Sort (Suliejimo)\n";
+    cout << "================================================================\n\n";
+}
+
+void spausdintiLenteleAntraste() {
+    cout << left
+         << setw(12) << "Dydis"
+         << setw(18) << "Duomenu tipas"
+         << setw(22) << "Insertion Sort (us)"
+         << setw(18) << "Merge Sort (us)"
+         << setw(20) << "Ins. palyg."
+         << setw(20) << "Mrg. palyg."
+         << setw(18) << "Ins. sukeitimai"
+         << setw(18) << "Mrg. sukeitimai"
+         << "\n";
+    cout << string(146, '-') << "\n";
+}
+
+void vykdytiEksperimenta() {
+    spausdintiAntraste();
+
+    vector<int> dydžiai = { 5000, 10000, 50000 };
+
+    vector<pair<string, int>> duomenuTipai = {
+        {"Atsitiktiniai", 0},
+        {"Surikiuoti",    1},
+        {"Atvirksciai",   2}
+    };
+
+    spausdintiLenteleAntraste();
+
+    for (int n : dydžiai) {
+        for (int t = 0; t < (int)duomenuTipai.size(); t++) {
+            string tipoPavadinimas = duomenuTipai[t].first;
+            int    tipoKodas       = duomenuTipai[t].second;
+            vector<int> pradiniai;
+            if      (tipoKodas == 0) pradiniai = generuotiAtsitiktinius(n);
+            else if (tipoKodas == 1) pradiniai = generuotiSurikiuotus(n);
+            else                     pradiniai = generuotiAtvirksciai(n);
+
+            // Abu algoritmai testuojami su tais pačiais pradiniais duomenimis
+            MatavimoPabaiga iterpimoRez  = matuotiIterpima(pradiniai);
+            MatavimoPabaiga suliejimoRez = matuotiSuliejima(pradiniai);
+
+            cout << left
+                 << setw(12) << n
+                 << setw(18) << tipoPavadinimas
+                 << setw(22) << fixed << setprecision(2) << iterpimoRez.vidutinisLaikasUs
+                 << setw(18) << suliejimoRez.vidutinisLaikasUs
+                 << setw(20) << iterpimoRez.palyginimai
+                 << setw(20) << suliejimoRez.palyginimai
+                 << setw(18) << iterpimoRez.sukeitimai
+                 << setw(18) << suliejimoRez.sukeitimai
+                 << "\n";
+        }
+        cout << string(146, '-') << "\n";
+    }
+
+    cout << "\nPastaba: laikas mikrosekundemis (us), vidurkis is 5 bandymu.\n";
+    cout << "Generavimo ir spausdinimo laikas netrauktas.\n";
+}
+
 int main() {
     vykdytiEksperimenta();
     return 0;
